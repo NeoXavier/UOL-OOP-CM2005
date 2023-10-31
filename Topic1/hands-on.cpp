@@ -1,56 +1,46 @@
 #include <iostream>
 
-void printMenu() {
-    // 1 Print help
-    std::cout << "1: Print help" << std::endl;
-    // 2 Print exchange stats
-    std::cout << "2: Print exchange stats." << std::endl;
-    // 3 Make an offer
-    std::cout << "3: Make an offer." << std::endl;
-    // 4 Make a bid
-    std::cout << "4: Make a bid." << std::endl;
-    // 5 Print wallet
-    std::cout << "5: Print wallet." << std::endl;
-    // 6 Continue
-    std::cout << "6: Continue." << std::endl;
+void printMenu(){
+        std::cout << "1. Print help" << std::endl;
+        std::cout << "2. Print exchange stats" << std::endl;
+        std::cout << "3. Place an ask" << std::endl;
+        std::cout << "4. Place a bid" << std::endl;
+        std::cout << "5. Print wallet" << std::endl;
+        std::cout << "6. Continue" << std::endl;
 
-    std::cout << "==============" << std::endl;
-    std::cout << "Type in 1-6" << std::endl;
+        std::cout << "============" << std::endl;
+        std::cout << "Type in 1-6" << std::endl;
 }
 
-int getUserOption() {
-    int userOption;
-    std::cin >> userOption;
-    std::cout << "You chose: " << userOption << std::endl;
+int getUserOption(){
+        int userOption;
+        std::cin >> userOption;
+        std::cout << "You chose: " << userOption << std::endl;
     return userOption;
 }
 
-void printHelp() {
+void printHelp(){
     std::cout << "Help" << std::endl;
 }
 
-void printExchangeStats() {
+void printExchangeStats(){
     std::cout << "Exchange stats" << std::endl;
 }
-
-void printOffer() {
+void printOffer(){
     std::cout << "Make an offer" << std::endl;
 }
-
-void printBid() {
+void printBid(){
     std::cout << "Make a bid" << std::endl;
 }
-
-void printWallet() {
+void printWallet(){
     std::cout << "Print wallet" << std::endl;
 }
-
-void continueProgram() {
+void continueProgram(){
     std::cout << "Continue" << std::endl;
 }
 
-void processUserOption(int userOption) {
-    switch (userOption) {
+void processUserOption(int userOption){
+    switch(userOption){
         case 1:
             printHelp();
             break;
@@ -71,14 +61,14 @@ void processUserOption(int userOption) {
             break;
         default:
             std::cout << "Invalid option" << std::endl;
+            break;
     }
     std::cout << std::endl;
-} 
+}
 
 int main()
 {
-    while (true)
-    {
+    while(true){
         printMenu();
         int userOption = getUserOption();
         processUserOption(userOption);
