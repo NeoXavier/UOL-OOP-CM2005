@@ -1,3 +1,4 @@
+//prevents multiple files from using this file
 #pragma once
 
 #include "OrderBookEntry.h"

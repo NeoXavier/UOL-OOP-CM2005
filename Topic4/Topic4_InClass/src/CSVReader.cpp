@@ -22,7 +22,7 @@ std::vector<OrderBookEntry> CSVReader::readCSV(std::string csvFilename)
                 entries.push_back(obe);
             }catch(const std::exception& e)
             {
-                //std::cout << "CSVReader::readCSV bad data"  << std::endl;
+                std::cout << "CSVReader::readCSV bad data"  << std::endl;
             }
         }// end of while
     }    
