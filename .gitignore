@@ -34,3 +34,4 @@
 # Build folder
 */build/
 
+.DS_Store
