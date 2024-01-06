@@ -1,75 +1,86 @@
+//////////////////////////////////////////////////////////////////////////////
+////////////////////////////// Start /////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
 #include "Plotter.h"
 #include <iostream>
 
-Plotter::Plotter (std::vector<CandleStick> _candleSticks)
-    : candleSticks{ _candleSticks }
+// Plotter class constructor
+Plotter::Plotter (std::vector<CandleStick> _candleSticks, int _plotHeight,
+                  int _plotWidth)
+    : candleSticks{ _candleSticks }, plotHeight{ _plotHeight },
+      plotWidth{ _plotWidth }
 {
 	std::sort (candleSticks.begin (), candleSticks.end (),
 	           CandleStick::compareByTimestamp);
-	this->minPrice = getMinPrice (candleSticks) * 0.995;
-	this->maxPrice = getMaxPrice (candleSticks) * 1.005;
+	this->minPrice = getMinPrice (candleSticks) * 0.99995;
+	this->maxPrice = getMaxPrice (candleSticks) * 1.00005;
 
 	this->numOfCandleSticks = candleSticks.size ();
-	this->plotHeight = 20;
-	this->plotWidth = 200;
 
 	this->step = (maxPrice - minPrice) / plotHeight;
 	this->columnWidth = (plotWidth - numOfCandleSticks) / numOfCandleSticks;
 
-    // Minimum column width is 10
-    if (columnWidth < 10) {
-        columnWidth = 10;
-        numOfCandleSticks = plotWidth / 11;
-        std::vector<CandleStick> newCandleSticks(candleSticks.begin(),
-                                                 candleSticks.begin() +
-                                                 numOfCandleSticks);
-        candleSticks = newCandleSticks;
+	// Minimum column width is 10, if calculated column width is less than 10,
+	// reduce the number of candlesticks to plot
+	if (columnWidth < 10)
+		{
+			columnWidth = 10;
+			numOfCandleSticks = plotWidth / 11;
+			std::vector<CandleStick> newCandleSticks (candleSticks.begin (),
+			                                          candleSticks.begin ()
+			                                              + numOfCandleSticks);
+			candleSticks = newCandleSticks;
 
-        // Warning message
-        std::cout << "Warning: Too many candlesticks to plot. Plotting "
-                  << numOfCandleSticks << " candlesticks instead." << std::endl;
-    }
+			// Warning message
+			std::cout
+			    << "Warning: Too many candlesticks to plot. Plotting first "
+			    << numOfCandleSticks << " candlesticks instead." << std::endl;
+		}
 
 	std::string spacer = " ";
 
-	//// Intializing plot
-	for (int row = 0; row < plotHeight+2; row++)
+	// Intializing plot matrix
+	for (int row = 0; row < plotHeight + 2; row++)
 		{
 			std::vector<std::string> line;
 			// number of columns = number of candlesticks * 2 as each
 			// candlestick is followed by an empty column for spacing
 			for (int col = 0; col < (numOfCandleSticks * 2); col++)
 				{
-                    // Drawing y-axis
-                    if (col == 0)
-                    {
-                        // Date label on y-axis
-                        if(row == plotHeight)
-                        {
-                            // Drawing x-axis
-                            line.push_back(fixLength("Date", 10));
-                            continue;
-                        }
-                        // Time label on y-axis
-                        if(row == plotHeight+1)
-                        {
-                            // Drawing x-axis
-                            line.push_back(fixLength("Time", 10));
-                            continue;
-                        }
+					// Drawing y-axis
+					if (col == 0)
+						{
+							// Date label on y-axis
+							if (row == plotHeight)
+								{
+									// Drawing x-axis
+									line.push_back (fixLength ("Date", 10));
+									continue;
+								}
+							// Time label on y-axis
+							if (row == plotHeight + 1)
+								{
+									// Drawing x-axis
+									line.push_back (fixLength ("Time", 10));
+									continue;
+								}
 
-                        std::string tick = fixLength (
-                                std::to_string (maxPrice - (step * row)), 10);
-                        line.push_back (tick);
-                        continue;
-                    }
+							std::string tick = fixLength (
+							    std::to_string (maxPrice - (step * row)), 10);
+							line.push_back (tick);
+							continue;
+						}
 
-					line.push_back(spacer);
+					line.push_back (spacer);
 				}
 			plotLines.push_back (line);
 		}
 }
 
+/*
+ * Function that plots the candlesticks on the plot and prints entire plot
+ */
 void
 Plotter::plot ()
 {
@@ -85,6 +96,12 @@ Plotter::plot ()
 		}
 }
 
+/*
+ * Function that draws a single candlestick on the plot
+ *
+ * @param candleStick: candlestick object to be plotted
+ * @param col: column number on the plot
+ */
 void
 Plotter::drawCandleStickOnPlot (CandleStick candleStick, int col)
 {
@@ -139,13 +156,26 @@ Plotter::drawCandleStickOnPlot (CandleStick candleStick, int col)
 			if (row == lowLineNumber + 1) { printer = blankPrinter; }
 			plotLines[row][col] = printer;
 		}
-    // Print x-axis timestamps
-    // Date
-    plotLines[plotHeight][col] = fixLength(candleStick.timestamp.substr(0, 10), columnWidth);
-    // Time
-    plotLines[plotHeight+1][col] = fixLength(candleStick.timestamp.substr(11, 8), columnWidth);
+	// Print x-axis timestamps
+	// Date
+	plotLines[plotHeight][col]
+	    = fixLength (candleStick.timestamp.substr (0, 10), columnWidth);
+
+	// Time (if timstamp includes time)
+	if (candleStick.timestamp.length () > 10)
+		{
+			plotLines[plotHeight + 1][col] = fixLength (
+			    candleStick.timestamp.substr (11, 8), columnWidth);
+		}
 }
 
+/*
+ * Function that maps a value to the line number on the plot
+ * @param value: value to be mapped
+ * @param step: step size between each line
+ * @param maxPrice: maximum price on the plot
+ * @return: line number on the plot
+ */
 int
 Plotter::valueToLineNumber (double value, double step, double maxPrice)
 {
@@ -162,6 +192,9 @@ Plotter::valueToLineNumber (double value, double step, double maxPrice)
 }
 
 // Helper Functions
+
+// getMinPrice and getMaxPrice functions are used to calculate the minimum and
+// maximum prices
 double
 Plotter::getMaxPrice (std::vector<CandleStick> candleSticks)
 {
@@ -184,18 +217,22 @@ Plotter::getMinPrice (std::vector<CandleStick> candleSticks)
 	return minPrice;
 }
 
+/*
+ * Function that fixes the length of a string by adding spaces at the back
+ * @param str: string to be fixed
+ * @param length: desired length of the string
+ * @return: fixed string
+ */
 std::string
 Plotter::fixLength (std::string str, int length)
 {
-	if (str.size () > length)
-		{
-			// If the string is too long, trim it from the back
-			str = str.substr (0, length);
-		}
-	if (str.size () < length)
-		{
-			// If the string is too short, add spaces at the back
-			str.append (length - str.size (), ' ');
-		}
+	// If the string is too long, trim it from the back
+	if (str.size () > length) str = str.substr (0, length);
+	// If the string is too short, add spaces at the back
+	if (str.size () < length) str.append (length - str.size (), ' ');
 	return str;
 }
+
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////// End ////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////

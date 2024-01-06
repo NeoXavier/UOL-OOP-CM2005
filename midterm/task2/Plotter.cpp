@@ -154,7 +154,8 @@ Plotter::valueToLineNumber (double value, double step, double maxPrice)
 		{
 			if (value > (maxPrice - (step * i)))
 				{
-					lineNumber = i - 1;
+                    //lineNumber = i - 1;
+                    lineNumber = i;
 					break;
 				}
 		}

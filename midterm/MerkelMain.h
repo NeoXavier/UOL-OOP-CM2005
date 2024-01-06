@@ -23,10 +23,15 @@ class MerkelMain
         int getUserOption();
         void processUserOption(int userOption);
 
+        ///////////////////////////// Start //////////////////////////////////
+        void showCandleStickData();
+        void plotCandleStickData(std::vector<CandleStick> candleSticks);
+        /////////////////////////////// End //////////////////////////////////
+
         std::string currentTime;
 
-//        OrderBook orderBook{"20200317.csv"};
-	OrderBook orderBook{"20200601.csv"};
+        OrderBook orderBook{"20200317.csv"};
+	//OrderBook orderBook{"20200601.csv"};
         Wallet wallet;
 
 };
