@@ -36,3 +36,12 @@
 
 .DS_Store
 lecturer-repo/
+
+*.zip
+*.csv
+
+main
+main2
+test
+
+.rgignore
